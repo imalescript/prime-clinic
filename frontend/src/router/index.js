@@ -9,11 +9,13 @@ const routes = [
       {
         path: '', 
         name: 'login',
+        meta: { title: 'Login', middleware: ['guest'] },
         component: () => import('@/views/auth/LoginView.vue')
       },
       {
         path: 'register', 
         name: 'register',
+        meta: { requiresGuest: true },
         component: () => import('@/views/auth/RegisterView.vue')
       }
     ]
