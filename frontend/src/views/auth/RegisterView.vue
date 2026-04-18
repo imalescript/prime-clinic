@@ -44,7 +44,7 @@ onUnmounted(() => {
 
 <template>
     <form @submit.prevent="submitRegister">
-        <Card class="w-full overflow-hidden shadow-2xl">
+        <Card class="w-full overflow-hidden shadow-2xl bg-surface-50">
             <template #title>
                 <h1 class="text-center text-2xl font-bold mb-2">Crear Cuenta</h1>
             </template>
