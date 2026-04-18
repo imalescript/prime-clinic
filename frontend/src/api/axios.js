@@ -6,7 +6,6 @@ const axiosInstance = axios.create({
     withXSRFToken: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
-        
         'Accept': 'application/json',
     }
 });
