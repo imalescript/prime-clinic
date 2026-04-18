@@ -45,7 +45,7 @@ onUnmounted(() => {
 
 <template>
     <form @submit.prevent="sumbitLogin" class="flex flex-col gap-4">
-        <Card class="w-full overflow-hidden shadow-2xl bg-surface-50">
+        <Card class="w-full overflow-hidden bg-surface-50">
             <template #title>
                 <h1 class="text-center text-2xl font-bold mb-2">Bienvenido</h1>
             </template>

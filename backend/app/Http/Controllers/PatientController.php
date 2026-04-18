@@ -12,7 +12,7 @@ class PatientController extends Controller
 {
     public function index(): JsonResponse
     {
-        $patients = Patient::with(['user', 'surgery']);
+        $patients = Patient::with(['user', 'surgery'])->get();
         return response()->json($patients);
     }
 

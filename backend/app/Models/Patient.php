@@ -28,9 +28,8 @@ class Patient extends Model
         'chronic_conditions',
         'user_id'
     ];
-    protected $casts = [
-        'birth_date' => 'date',
-    ];
+    protected $casts = ['birth_date' => 'date', ];
+    protected $appends = ['full_name', 'age'];
 
     protected function fullName(): Attribute
     {
