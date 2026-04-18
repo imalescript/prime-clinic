@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axiosInstance from '@/api/axios';
 
 const router = useRouter();
 
@@ -14,21 +15,30 @@ const isValidEmail = (value) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
-const handleLogin = () => {
+const handleLogin = async () => {
     errors.value = {};
-
+    
     if (!email.value) {
         errors.value.email = "El correo es obligatorio.";
     } else if (!isValidEmail(email.value)) {
         errors.value.email = "Ingresa un correo válido.";
     }
+    if (!password.value) errors.value.password = "Mínimo 8 caracteres.";
 
-    if (!password.value) {
-        errors.value.password = "La contraseña es obligatoria.";
-    }
+    try {
+        await axiosInstance.get('/sanctum/csrf-cookie');
 
-    if (Object.keys(errors.value).length === 0) {
-        console.log("Intentando login con:", { email: email.value, password: password.value });
+        const response = await axiosInstance.post('/login', {
+            email: email.value,
+            password: password.value,
+        });
+
+        console.log("Usuario registrado con éxito");
+        router.push('/dashboard'); 
+    } catch (error) {
+        if (error.response && error.response.status === 422) {
+            throw error.response.data.errors;
+        }
     }
 };
 
@@ -51,23 +61,33 @@ const goToRegister = () => {
             <template #content>
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col gap-2">
-                        <label for="email" class="font-semibold">Correo Electrónico</label>
-                        <InputText id="email" v-model="email" type="email" :invalid="!!errors.email" placeholder="ejemplo@correo.com" fluid />
+                        <label for="email-login" class="font-semibold">Correo Electrónico</label>
+                        <InputText 
+                        id="email-login"
+                        v-model="email" 
+                        type="email" 
+                        :invalid="!!errors.email" 
+                        placeholder="ejemplo@correo.com" fluid />
                         <small class="text-red-500" v-if="errors.email">{{ errors.email }}</small>
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <label for="password" class="font-semibold">Contraseña</label>
-                        <Password id="password" v-model="password" :feedback="false" toggleMask fluid :invalid="!!errors.password" placeholder="********" />
+                        <label for="pass-login" class="font-semibold">Contraseña</label>
+                        <Password 
+                        :inputProps="{ id: 'pass-login' }"
+                        v-model="password" 
+                        toggleMask fluid 
+                        :invalid="!!errors.password" 
+                        placeholder="********" />
                         <small class="text-red-500" v-if="errors.password">{{ errors.password }}</small>
                     </div>
 
                     <div class="flex justify-end">
-                        <Button type="submit" label="¿Ha olvidado la contraseña?" link class="text-sm" />
+                        <Button label="¿Ha olvidado la contraseña?" link class="text-sm" />
                     </div>
                 </div>
 
-                <Button label="Entrar" icon="pi pi-sign-in" class="w-full" />
+                <Button type="submit" label="Entrar" icon="pi pi-sign-in" class="w-full" />
             </template>
 
             <template #footer>

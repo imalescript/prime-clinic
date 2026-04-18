@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from '@/api/axios';
+import axiosInstance from '@/api/axios';
 
 const router = useRouter();
 
@@ -29,11 +29,11 @@ const handleRegister = async () => {
     if (Object.keys(errors.value).length > 0) return;
 
     loading.value = true;
-
+    
     try {
-        await axios.get('/sanctum/csrf-cookie');
+        await axiosInstance.get('/sanctum/csrf-cookie');
 
-        const response = await axios.post('/register', {
+        const response = await axiosInstance.post('/register', {
             name: name.value,
             email: email.value,
             password: password.value,
@@ -44,8 +44,10 @@ const handleRegister = async () => {
         router.push('/dashboard'); 
 
     } catch (error) {
-        if (error.response.status === 422) {
+        if (error.response && error.response.status === 422) {
             errors.value = error.response.data.errors;
+        } else {
+            console.error("Error inesperado:", error);
         }
     } finally {
         loading.value = false;
@@ -71,27 +73,50 @@ const goToLogin = () => {
             <template #content>
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col gap-2">
-                        <label for="name" class="font-semibold">Nombre Completo</label>
-                        <InputText id="name" v-model="name" :invalid="!!errors.name" placeholder="Juan Pérez" fluid />
+                        <label for="name-register" class="font-semibold">Nombre Completo</label>
+                        <InputText
+                        id="name-register"
+                        v-model="name"
+                        :invalid="!!errors.name"
+                        placeholder="Juan Pérez"
+                        fluid />
                         <small class="text-red-500" v-if="errors.name">{{ errors.name }}</small>
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <label for="email" class="font-semibold">Correo Electrónico</label>
-                        <InputText id="email" v-model="email" type="email" :invalid="!!errors.email" placeholder="ejemplo@correo.com" fluid />
+                        <label for="email-register" class="font-semibold">Correo Electrónico</label>
+                        <InputText 
+                        id="email-register"
+                        v-model="email" 
+                        type="email" 
+                        :invalid="!!errors.email" 
+                        placeholder="ejemplo@correo.com" 
+                        fluid />
                         <small class="text-red-500" v-if="errors.email">{{ errors.email }}</small>
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <label for="password" class="font-semibold">Contraseña</label>
-                        <Password id="password" v-model="password" toggleMask :invalid="!!errors.password" fluid placeholder="********" 
-                                  promptLabel="Elige una clave" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" />
-                                  <small class="text-red-500" v-if="errors.password">{{ errors.password }}</small>
+                        <label for="pass-register" class="font-semibold">Contraseña</label>
+                        <Password 
+                        :inputProps="{ id: 'pass-register' }"
+                        v-model="password" 
+                        :invalid="!!errors.password" 
+                        toggleMask 
+                        fluid 
+                        placeholder="********" 
+                        promptLabel="Elige una clave" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" />
+                        <small class="text-red-500" v-if="errors.password">{{ errors.password }}</small>
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        <label for="confirmPassword" class="font-semibold">Confirmar Contraseña</label>
-                        <Password id="confirmPassword" v-model="confirmPassword" :invalid="!!errors.confirmPassword" :feedback="false" toggleMask fluid placeholder="********" />
+                        <label for="confirmPass-register" class="font-semibold">Confirmar Contraseña</label>
+                        <Password 
+                        :inputProps="{ id: 'confirmPass-register'}"
+                        v-model="confirmPassword" 
+                        :invalid="!!errors.confirmPassword" 
+                        toggleMask 
+                        fluid 
+                        placeholder="********" />
                         <small class="text-red-500" v-if="errors.confirmPassword">{{ errors.confirmPassword }}</small>
                     </div>
                 </div>
@@ -101,9 +126,10 @@ const goToLogin = () => {
                 <div class="flex flex-col gap-3 mt-2">
                     <Button type="submit" label="Crear Cuenta" icon="pi pi-user-plus" class="w-full" />
                     
-                    <div class="flex items-center justify-center gap-2 mt-2">
-                        <span class="text-sm text-color-secondary">¿Ya tienes cuenta?</span>
-                        <Button label="Inicie sesión" link @click="goToLogin" class="p-0 text-sm font-bold" />
+                    <div class="center-box gap-2 mt-2">
+                        <span class="text-color-secondary">¿Ya tienes cuenta?</span>
+
+                        <Button label="Inicie sesión" class="p-0 text-sm font-bold" link @click="goToLogin" />
                     </div>
                 </div>
             </template>

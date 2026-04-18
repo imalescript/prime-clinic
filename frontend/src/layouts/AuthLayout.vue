@@ -7,7 +7,7 @@
         </main>
         
         <footer class="p-4 text-center border-t">
-            <p>&copy; 2026 - Sistema de Gestión de Pacientes</p>
+            <p>&copy; 2026 - Prime Clinic</p>
         </footer>
     </div>
         
