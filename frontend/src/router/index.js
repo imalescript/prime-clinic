@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const routes = [
   // GRUPO PÚBLICO
@@ -9,11 +10,13 @@ const routes = [
       {
         path: '', 
         name: 'login',
+        meta: { guestOnly: true },
         component: () => import('@/views/auth/LoginView.vue')
       },
       {
-        path: 'register', 
+        path: '/register', 
         name: 'register',
+        meta: { guestOnly: true },
         component: () => import('@/views/auth/RegisterView.vue')
       }
     ]
@@ -27,9 +30,9 @@ const routes = [
       {
         path: '',
         name: 'dashboard',
+        meta: { requiresAuth: true },
         component: () => import('@/views/dashboard/DashboardView.vue')
       }
-      // Más adelante agregaremos /patients, /surgeries, etc. aquí
     ]
   }
 ];
@@ -37,6 +40,23 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+
+router.beforeEach(async (to, from, next) => {
+    const authStore = useAuthStore();
+
+    if (authStore.authUser === null) {
+        await authStore.getUser();
+    }
+
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+        return next({ name: 'login' });
+    }
+
+    if (to.meta.guestOnly && authStore.isAuthenticated) {
+        return next({ name: 'dashboard' });
+    }
+    next();
 });
 
 export default router;

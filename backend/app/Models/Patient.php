@@ -50,7 +50,7 @@ class Patient extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function surgeries(): HasMany
+    public function surgery(): HasMany
     {
         return $this->hasMany(Surgery::class);
     }

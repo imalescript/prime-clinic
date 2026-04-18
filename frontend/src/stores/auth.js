@@ -6,17 +6,12 @@ import { useRouter } from 'vue-router';
 export const useAuthStore = defineStore('auth', () => {
     const router = useRouter();
     
-    // -- Estado (State) --
     const authUser = ref(null);
     const authErrors = ref({});
     const isLoading = ref(false);
 
-    // -- Getters --
     const isAuthenticated = computed(() => !!authUser.value);
 
-    // -- Acciones (Actions) --
-    
-    // Obtener datos del usuario autenticado
     const getUser = async () => {
         try {
             const response = await axiosInstance.get('/api/user');
@@ -26,7 +21,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    // Registro
     const handleRegister = async (data) => {
         authErrors.value = {};
         isLoading.value = true;
@@ -44,7 +38,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    // Login
     const handleLogin = async (data) => {
         authErrors.value = {};
         isLoading.value = true;
@@ -62,6 +55,16 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('/logout');
+            authUser.value = null;
+            authErrors.value = {};
+            router.push('/');
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    };
     return {
         authUser,
         authErrors,
@@ -69,6 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
         isAuthenticated,
         handleRegister,
         handleLogin,
+        handleLogout,
         getUser
     };
 });
