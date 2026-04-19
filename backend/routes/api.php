@@ -18,4 +18,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::put('/patients/{patient}', [PatientController::class, 'update'])->name('patients.update');
 
+    Route::delete('/patients/{patient}', [PatientController::class, 'destroy']);
 });

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import axiosInstance from '@/api/axios'; // Asumiendo tu ruta de axios
+import axiosInstance from '@/api/axios';
 
 export const usePatientStore = defineStore('patient', () => {
     const patients = ref([]);          
@@ -73,6 +73,21 @@ export const usePatientStore = defineStore('patient', () => {
         }
     };
 
+    const deletePatient = async (id) => {
+        isLoading.value = true;
+        patientErrors.value = {};
+
+        try {
+            await axiosInstance.delete(`/api/patients/${id}`);
+        patients.value = patients.value.filter(p => p.id != id);
+        } catch (error) {
+        console.error("Error eliminando paciente:", error);
+        throw error;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
     const resetStore = () => {
         patients.value = [];
         currentPatient.value = null;
@@ -88,6 +103,7 @@ export const usePatientStore = defineStore('patient', () => {
         fetchPatientById,
         storePatient,
         updatePatient,
+        deletePatient,
         resetStore
     };
 });

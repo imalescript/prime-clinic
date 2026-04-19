@@ -41,9 +41,8 @@ class PatientController extends Controller
         ]);
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(Patient $patient): JsonResponse
     {
-        $patient = Patient::findOrFail($id);
         $patient->delete();
         return response()->json(['message' => 'Paciente eliminado correctamente']);
     }

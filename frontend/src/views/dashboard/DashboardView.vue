@@ -24,8 +24,21 @@ const viewPatient = (id) => {
 const editPatient = (id) => {
     router.push({ name: 'patients.update', params: { id } });
 };
-const confirmDelete = (id) => {
-    console.log("Borrando paciente:", id);
+
+const visible = ref(false);
+const selectedPatientId = ref(null); 
+const openDialogDelete = (id) => {
+    selectedPatientId.value = id; // Guardamos el ID del paciente "en espera"
+};
+const confirmDelete = async ()  => {
+    if (!selectedPatientId.value) return;
+
+    try {
+        await patientStore.deletePatient(selectedPatientId.value);
+        
+    } catch (error) {
+        console.log(error)
+    }
 };
 </script>
 
@@ -125,11 +138,30 @@ const confirmDelete = (id) => {
         >
             <template #body="slotProps">
                 <div class="flex gap-2">
-                    <Button icon="pi pi-eye" rounded severity="info" @click="viewPatient(slotProps.data.id)" />
-                    <Button icon="pi pi-pencil" rounded @click="editPatient(slotProps.data.id)"/>
-                    <Button icon="pi pi-trash" rounded  severity="danger"/>
+                    <Button 
+                    icon="pi pi-eye" 
+                    rounded severity="info" 
+                    @click="viewPatient(slotProps.data.id)" />
+                    <Button 
+                    icon="pi pi-pencil"
+                     rounded 
+                     @click="editPatient(slotProps.data.id)"/>
+                    <Button 
+                    icon="pi pi-trash" 
+                    rounded  
+                    severity="danger"
+                    @click="openDialogDelete(slotProps.data.id), visible=true" />
                 </div>
             </template>
         </Column>
     </DataTable>
+
+    <Dialog v-model:visible="visible" modal header="Eliminar Paciente" :style="{ width: '25rem' }">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">¿Estás seguro?</span>
+
+    <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Eliminar" @click="confirmDelete(), visible = false"></Button>
+    </div>
+    </Dialog>
 </template>

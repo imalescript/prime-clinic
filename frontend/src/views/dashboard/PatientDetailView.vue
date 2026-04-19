@@ -28,6 +28,22 @@ const handleEdit = () => {
     const id = route.params.id; 
     router.push({ name: 'patients.update', params: { id } });
 };
+
+const visible = ref(false);
+const selectedPatientId = ref(null); 
+const openDialogDelete = () => {
+    selectedPatientId.value = route.params.id; // Guardamos el ID del paciente "en espera"
+};
+const confirmDelete = async ()  => {
+    if (!selectedPatientId.value) return;
+
+    try {
+        await patientStore.deletePatient(selectedPatientId.value);
+        router.push({ name: 'dashboard'})
+    } catch (error) {
+        console.log(error)
+    }
+};
 </script>
 
 <template>
@@ -49,6 +65,11 @@ const handleEdit = () => {
       <div class="flex gap-2">
         <Button label="Volver" icon="pi pi-arrow-left" outlined @click="router.back()" />
         <Button label="Editar" icon="pi pi-pencil" @click="handleEdit" />
+        <Button 
+            label="Eliminar"
+            icon="pi pi-trash"   
+            severity="danger"
+            @click="openDialogDelete(), visible=true" />
       </div>
     </div>
         <!-- cuadro de informacion critica       -->
@@ -114,4 +135,13 @@ const handleEdit = () => {
           <i class="pi pi-user text-xs"></i>
           <span>Registrado por ID: {{ patient?.user_id }}</span>
         </div>
+
+<Dialog v-model:visible="visible" modal header="Eliminar Paciente" :style="{ width: '25rem' }">
+<span class="text-surface-500 dark:text-surface-400 block mb-8">¿Estás seguro?</span>
+
+<div class="flex justify-end gap-2">
+<Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+<Button type="button" label="Eliminar" @click="confirmDelete(), visible = false"></Button>
+</div>
+</Dialog>
 </template>
