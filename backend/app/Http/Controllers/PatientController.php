@@ -16,12 +16,10 @@ class PatientController extends Controller
         return response()->json($patients);
     }
 
-    public function show($id): JsonResponse
-    {
-        $patient = Patient::findOrFail($id);
-        return response()->json($patient);
+    public function show(Patient $patient) {
+    return response()->json($patient);
     }
-
+    
     public function store(StorePatientRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -33,13 +31,12 @@ class PatientController extends Controller
         ], 201);
     }
 
-    public function update(UpdatePatientRequest $request, $id): JsonResponse
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
     {
-        $patient = Patient::findOrFail($id);
-        $data = $request->validated();
-        $patient->update($data);
+        $patient->update($request->validated());
+    
         return response()->json([
-            'message' => 'Información del paciente actualizada correctamente',
+            'message' => 'Paciente actualizado con éxito',
             'patient' => $patient
         ]);
     }

@@ -2,17 +2,28 @@
 import { usePatientStore } from '@/stores/patientStore';
 import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const patientStore = usePatientStore();
 onMounted(() => {
     patientStore.fetchPatients();
 });
 
-//FILTER
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const viewPatient = (id) => {
+    router.push({ name: 'patients.show', params: { id } });
+};
+const editPatient = (id) => {
+    router.push({ name: 'patients.edit', params: { id } });
+};
+const confirmDelete = (id) => {
+    console.log("Borrando paciente:", id);
+};
 </script>
 
 <template>
@@ -110,8 +121,8 @@ const filters = ref({
         header-class="min-w-48"
         >
             <template #body="slotProps">
-                <div class="flex gap-1.5">
-                    <Button icon="pi pi-eye" rounded severity="info"/>
+                <div class="flex gap-2">
+                    <Button icon="pi pi-eye" rounded severity="info" @click="viewPatient(slotProps.data.id)" />
                     <Button icon="pi pi-pencil" rounded />
                     <Button icon="pi pi-trash" rounded  severity="danger"/>
                 </div>

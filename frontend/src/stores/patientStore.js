@@ -14,7 +14,6 @@ export const usePatientStore = defineStore('patient', () => {
         patientErrors.value = {};
         try {
             const response = await axiosInstance.get('/api/patients');
-            // IMPORTANTE: Asegúrate de mapear según la estructura de tu JSON
             patients.value = response.data.data || response.data; 
         } catch (error) {
             console.error("Error al cargar pacientes:", error);
@@ -24,7 +23,23 @@ export const usePatientStore = defineStore('patient', () => {
         }
     };
 
-    // 2. Crear un nuevo paciente
+    const fetchPatientById = async (id) => {
+        isLoading.value = true;
+        patientErrors.value = {};
+        currentPatient.value = null;
+        try {
+            const response = await axiosInstance.get(`/api/patients/${id}`);
+            currentPatient.value = response.data; 
+            return true;
+        } catch (error) {
+            console.error("Error al obtener el paciente:", error);
+            patientErrors.value = error.response?.data?.errors || { message: "No se encontró el paciente" };
+            return false;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
     const storePatient = async (data) => {
         isLoading.value = true;
         patientErrors.value = {};
@@ -54,6 +69,7 @@ export const usePatientStore = defineStore('patient', () => {
         isLoading,
         patientErrors,
         fetchPatients,
+        fetchPatientById,
         storePatient,
         resetStore
     };

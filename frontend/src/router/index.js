@@ -5,18 +5,17 @@ const routes = [
   // GRUPO PÚBLICO
   {
     path: '/',
+    meta: { guestOnly: true },
     component: () => import('@/layouts/AuthLayout.vue'),
     children: [
       {
         path: '', 
         name: 'login',
-        meta: { guestOnly: true },
         component: () => import('@/views/auth/LoginView.vue')
       },
       {
         path: '/register', 
         name: 'register',
-        meta: { guestOnly: true },
         component: () => import('@/views/auth/RegisterView.vue')
       }
     ]
@@ -25,14 +24,25 @@ const routes = [
   // GRUPO PRIVADO 
   {
     path: '/dashboard',
+    meta: { requiresAuth: true },
     component: () => import('@/layouts/AppLayout.vue'),
     children: [
       {
         path: '',
         name: 'dashboard',
-        meta: { requiresAuth: true },
         component: () => import('@/views/dashboard/DashboardView.vue')
-      }
+      },
+      {
+        path: '/patient/:id',
+        name: 'patients.show',
+        component: () => import('@/views/dashboard/PatientDetailView.vue')
+      },
+      {
+        path: 'patient/:id/update',
+        name: 'patients.update',
+        component: () => import('@/views/dashboard/PatientFormView.vue'),
+        props: true 
+    }
     ]
   }
 ];

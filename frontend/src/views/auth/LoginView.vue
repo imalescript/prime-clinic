@@ -34,7 +34,7 @@ const sumbitLogin = () => {
 };
 
 const goToRegister = () => {
-    router.push('/register');
+    router.push({ name: 'register'});
 };
 
 onUnmounted(() => {
