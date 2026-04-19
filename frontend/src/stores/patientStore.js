@@ -56,6 +56,22 @@ export const usePatientStore = defineStore('patient', () => {
             isLoading.value = false;
         }
     };
+    
+    const updatePatient = async (id, data) => {
+        isLoading.value = true;
+        patientErrors.value = {};
+        try {
+            await axiosInstance.put(`/api/patients/${id}`, data);
+            return true;
+        } catch (error) {
+            if (error.response?.status === 422) {
+                patientErrors.value = error.response.data.errors;
+            }
+            return false;
+        } finally {
+            isLoading.value = false;
+        }
+    };
 
     const resetStore = () => {
         patients.value = [];
@@ -71,6 +87,7 @@ export const usePatientStore = defineStore('patient', () => {
         fetchPatients,
         fetchPatientById,
         storePatient,
+        updatePatient,
         resetStore
     };
 });

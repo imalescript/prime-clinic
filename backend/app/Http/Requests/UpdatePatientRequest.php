@@ -14,14 +14,14 @@ class UpdatePatientRequest extends FormRequest
 
     public function rules(): array
     {
-        $patientId = $this->route('id');
+        $patientId = $this->route('patient');
         
         return [
             'cedula' => [
                 'required',
                 'string',
                 'max:20',
-                Rule::unique('patients')->ignore($patientId),
+                Rule::unique('patients', 'cedula')->ignore($patientId),
             ],
             'first_name'         => 'required|string|max:100',
             'last_name'          => 'required|string|max:100',

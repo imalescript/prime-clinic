@@ -38,11 +38,16 @@ const routes = [
         component: () => import('@/views/dashboard/PatientDetailView.vue')
       },
       {
+        path: 'patients/store',
+        name: 'patients.store',
+        component: () => import('@/views/dashboard/PatientFormView.vue')
+      },
+      {
         path: 'patient/:id/update',
         name: 'patients.update',
         component: () => import('@/views/dashboard/PatientFormView.vue'),
         props: true 
-    }
+      },
     ]
   }
 ];

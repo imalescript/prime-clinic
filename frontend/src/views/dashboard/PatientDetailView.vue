@@ -24,10 +24,9 @@ onUnmounted(() => {
     patientStore.currentPatient = null;
 });
 
-const goBack = () => router.push({ name: 'dashboard' });
-
-const toggleEdit = () => {
-    isEditing.value = !isEditing.value;
+const handleEdit = () => {
+    const id = route.params.id; 
+    router.push({ name: 'patients.update', params: { id } });
 };
 </script>
 
@@ -48,8 +47,8 @@ const toggleEdit = () => {
       </div>
       <!-- botones -->
       <div class="flex gap-2">
-        <Button label="Volver" icon="pi pi-arrow-left" outlined @click="goBack" />
-        <Button label="Editar" icon="pi pi-pencil" @click="toggleEdit" />
+        <Button label="Volver" icon="pi pi-arrow-left" outlined @click="router.back()" />
+        <Button label="Editar" icon="pi pi-pencil" @click="handleEdit" />
       </div>
     </div>
         <!-- cuadro de informacion critica       -->
@@ -68,22 +67,22 @@ const toggleEdit = () => {
       <div class="flex flex-wrap gap-6 mb-8">
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Cédula</label>
-          <p class="text-lg font-medium">{{ patient?.cedula }}</p>
+          <p class="text-gray-700">{{ patient?.cedula }}</p>
         </div>
 
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Género</label>
-          <p class="text-lg font-medium">{{ patient?.gender }}</p>
+          <p class="text-gray-700">{{ patient?.gender }}</p>
         </div>
 
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Tipo de Sangre</label>
-          <p class="text-lg text-red-600 font-bold">{{ patient?.blood_type }}</p>
+          <p class="text-red-600 font-bold">{{ patient?.blood_type }}</p>
         </div>
 
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">F. Nacimiento</label>
-          <p class="text-lg font-medium">{{ new Date(patient?.birth_date).toLocaleDateString() }}</p>
+          <p class="text-gray-700">{{ new Date(patient?.birth_date).toLocaleDateString() }}</p>
         </div>
 
          <div>

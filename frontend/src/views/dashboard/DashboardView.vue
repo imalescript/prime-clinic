@@ -15,11 +15,14 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const createPatient = () => {
+    router.push({ name: 'patients.store' });
+};
 const viewPatient = (id) => {
     router.push({ name: 'patients.show', params: { id } });
 };
 const editPatient = (id) => {
-    router.push({ name: 'patients.edit', params: { id } });
+    router.push({ name: 'patients.update', params: { id } });
 };
 const confirmDelete = (id) => {
     console.log("Borrando paciente:", id);
@@ -43,7 +46,7 @@ const confirmDelete = (id) => {
         <Button 
           icon="pi pi-plus" 
           rounded
-          @click="" 
+          @click="createPatient" 
         />
 
         <IconField>
@@ -123,7 +126,7 @@ const confirmDelete = (id) => {
             <template #body="slotProps">
                 <div class="flex gap-2">
                     <Button icon="pi pi-eye" rounded severity="info" @click="viewPatient(slotProps.data.id)" />
-                    <Button icon="pi pi-pencil" rounded />
+                    <Button icon="pi pi-pencil" rounded @click="editPatient(slotProps.data.id)"/>
                     <Button icon="pi pi-trash" rounded  severity="danger"/>
                 </div>
             </template>
